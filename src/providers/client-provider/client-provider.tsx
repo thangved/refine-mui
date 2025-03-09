@@ -1,16 +1,34 @@
 "use client";
+import "@i18n";
 import { FileOpenRounded, FolderRounded } from "@mui/icons-material";
 import { accessControlProvider } from "@providers/access-control-provider";
 import { authProviderClient } from "@providers/auth-provider/auth-provider.client";
 import { dataProvider } from "@providers/data-provider";
-import { Refine } from "@refinedev/core";
+import { I18nProvider, Refine } from "@refinedev/core";
 import { RefineKbar } from "@refinedev/kbar";
 import { useNotificationProvider } from "@refinedev/mui";
 import routerProvider from "@refinedev/nextjs-router";
-import React from "react";
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import ThemeProvider from "./theme-provider";
 
 export default function ClientProvider({ children }: React.PropsWithChildren) {
+  const { t, i18n } = useTranslation();
+  const i18nProvider: I18nProvider = useMemo(
+    () => ({
+      changeLocale(locale, options) {
+        i18n.changeLanguage(locale);
+      },
+      getLocale() {
+        return i18n.language;
+      },
+      translate(key, options, defaultMessage) {
+        return t(key, { defaultValue: defaultMessage });
+      },
+    }),
+    [i18n, t]
+  );
+
   return (
     <Refine
       routerProvider={routerProvider}
@@ -18,6 +36,7 @@ export default function ClientProvider({ children }: React.PropsWithChildren) {
       notificationProvider={useNotificationProvider}
       authProvider={authProviderClient}
       accessControlProvider={accessControlProvider}
+      i18nProvider={i18nProvider}
       resources={[
         {
           name: "blog_posts",

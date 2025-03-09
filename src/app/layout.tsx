@@ -1,13 +1,13 @@
+import { ColorModeContextProvider } from "@contexts/color-mode";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import ClientProvider from "@providers/client-provider";
 import { DevtoolsProvider } from "@providers/devtools";
 import { RefineKbarProvider } from "@refinedev/kbar";
 import { RefineSnackbarProvider } from "@refinedev/mui";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
+import NextTopLoader from "nextjs-toploader";
 import React, { Suspense } from "react";
-
-import { ColorModeContextProvider } from "@contexts/color-mode";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { ClientProvider } from "../providers/client";
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -29,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <NextTopLoader color="#5188ff" />
         <AppRouterCacheProvider>
           <Suspense>
             <RefineKbarProvider>
