@@ -1,18 +1,13 @@
 import { DevtoolsProvider } from "@providers/devtools";
-import { GitHubBanner, Refine } from "@refinedev/core";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-import {
-  RefineSnackbarProvider,
-  useNotificationProvider,
-} from "@refinedev/mui";
-import routerProvider from "@refinedev/nextjs-router";
+import { RefineKbarProvider } from "@refinedev/kbar";
+import { RefineSnackbarProvider } from "@refinedev/mui";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import React, { Suspense } from "react";
 
 import { ColorModeContextProvider } from "@contexts/color-mode";
-import { authProviderClient } from "@providers/auth-provider/auth-provider.client";
-import { dataProvider } from "@providers/data-provider";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { ClientProvider } from "../providers/client";
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -34,54 +29,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Suspense>
-          <GitHubBanner />
-          <RefineKbarProvider>
-            <ColorModeContextProvider defaultMode={defaultMode}>
-              <RefineSnackbarProvider>
-                <DevtoolsProvider>
-                  <Refine
-                    routerProvider={routerProvider}
-                    dataProvider={dataProvider}
-                    notificationProvider={useNotificationProvider}
-                    authProvider={authProviderClient}
-                    resources={[
-                      {
-                        name: "blog_posts",
-                        list: "/blog-posts",
-                        create: "/blog-posts/create",
-                        edit: "/blog-posts/edit/:id",
-                        show: "/blog-posts/show/:id",
-                        meta: {
-                          canDelete: true,
-                        },
-                      },
-                      {
-                        name: "categories",
-                        list: "/categories",
-                        create: "/categories/create",
-                        edit: "/categories/edit/:id",
-                        show: "/categories/show/:id",
-                        meta: {
-                          canDelete: true,
-                        },
-                      },
-                    ]}
-                    options={{
-                      syncWithLocation: true,
-                      warnWhenUnsavedChanges: true,
-                      useNewQueryKeys: true,
-                      projectId: "kf1EGX-88oDZF-TkTQm4",
-                    }}
-                  >
-                    {children}
-                    <RefineKbar />
-                  </Refine>
-                </DevtoolsProvider>
-              </RefineSnackbarProvider>
-            </ColorModeContextProvider>
-          </RefineKbarProvider>
-        </Suspense>
+        <AppRouterCacheProvider>
+          <Suspense>
+            <RefineKbarProvider>
+              <ColorModeContextProvider defaultMode={defaultMode}>
+                <RefineSnackbarProvider>
+                  <DevtoolsProvider>
+                    <ClientProvider>{children}</ClientProvider>
+                  </DevtoolsProvider>
+                </RefineSnackbarProvider>
+              </ColorModeContextProvider>
+            </RefineKbarProvider>
+          </Suspense>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
